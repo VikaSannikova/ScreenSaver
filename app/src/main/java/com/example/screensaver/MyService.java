@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -14,6 +16,7 @@ import androidx.core.app.NotificationManagerCompat;
 public class MyService extends Service {
     private String CHANNEL_ID = "channel";
     private int NOTIFY_ID = 111;
+    public Thread thread_for_job;
 
     public MyService() {
     }
@@ -50,6 +53,16 @@ public class MyService extends Service {
                 .setContentIntent(pendingIntent);
         notificationManager.notify(NOTIFY_ID, builder.build());
         startForeground(NOTIFY_ID, builder.build());
+
+        SystemClock.sleep(5000);
+
+        Log.d("___", "GO VIDEO");
+        Intent intentSS = new Intent(this, ScreenSaverActivity.class);
+        intentSS.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntentSS = PendingIntent.getActivity(this, 0, intentSS, 0);
+        builder.setFullScreenIntent(pendingIntent,true);
+
+        //startActivity(intentSS);
         return super.onStartCommand(intent, flags, startId);
     }
 }

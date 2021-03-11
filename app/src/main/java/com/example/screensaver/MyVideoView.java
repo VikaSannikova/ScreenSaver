@@ -17,6 +17,7 @@ public class MyVideoView extends FrameLayout {
 
     public MyVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        Log.d("___", "Start Video");
         View view = inflate(getContext(), R.layout.my_video_view,this);
         VideoView videoView = view.findViewById(R.id.full_screen_video);
         String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video;
@@ -24,15 +25,19 @@ public class MyVideoView extends FrameLayout {
         videoView.setVideoURI(uri);
         videoView.setMediaController(new MediaController(context));
         videoView.requestFocus(0);
+
+        MediaController ctrl = new MediaController(context);
+        ctrl.setVisibility(View.GONE);
+        videoView.setMediaController(ctrl);
+
         videoView.start(); // начинаем воспроизведение автоматически
-
-
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 videoView.start();
             }
         });
+
     }
 
     public MyVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
