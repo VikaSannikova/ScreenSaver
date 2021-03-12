@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -18,6 +19,7 @@ public class MyService extends Service {
     private String CHANNEL_ID = "channel";
     private int NOTIFY_ID = 111;
     public Thread thread_for_job;
+    MyPowerReceiver myPowerReceiver = new MyPowerReceiver();
 
     public MyService() {
     }
@@ -40,12 +42,24 @@ public class MyService extends Service {
         }
     }
 
+    private void  registerMyPowerReceiver(){
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(myPowerReceiver, intentFilter);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String input = intent.getStringExtra("inputExtra");
+        Log.d("___", "START SERVICE");
+        String restart = intent.getStringExtra("status");
         createNotificationChannel();
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        registerMyPowerReceiver();
+
+
+        // Intent notificationIntent = new Intent(this, MainActivity.class);
+        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Intent intent1 = new Intent(this, ScreenSaverActivity.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -55,22 +69,30 @@ public class MyService extends Service {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setContentTitle("Foreground Service")
-                .setContentText(input)
+                .setContentText("GO")
                 .setSmallIcon(R.drawable.cat)
                 .setContentIntent(pendingIntent1);
         notificationManager.notify(NOTIFY_ID, builder.build());
         startForeground(NOTIFY_ID, builder.build());
 
-        SystemClock.sleep(5000);
         Log.d("___", "NEW INTENT");
 
-        Intent myintent = new Intent(this, MyReceiver.class);
-        //PendingIntent pendingIntentforButton = PendingIntent.getBroadcast(this, 0, myintent, 0);
-        sendBroadcast(myintent);
 
 
-        //this.startActivity(intent1);
-        //notificationManager.notify(NOTIFY_ID, builder.build());
+
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(5*1000);
+//                    Log.d("___","im in thread");
+//                    startActivity(intent1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        thread.run();
         Log.d("___", "GO VIDEO");
 
 
