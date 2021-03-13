@@ -45,8 +45,7 @@ public class MyService extends Service {
     private void  registerMyPowerReceiver(){
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
-        intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(myPowerReceiver, intentFilter);
     }
 
@@ -56,46 +55,36 @@ public class MyService extends Service {
         String restart = intent.getStringExtra("status");
         createNotificationChannel();
         registerMyPowerReceiver();
+        if(intent.getStringExtra("restart")!= null) {
+            if (intent.getStringExtra("restart").equals("true")) {
+                Intent myintent = new Intent(this, MyPowerReceiver.class);
+                PendingIntent pendingIntentforButton = PendingIntent.getBroadcast(this, 0, myintent, 0);
+                try {
+                    pendingIntentforButton.send();
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Intent intent1 = new Intent(this, ScreenSaverActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pendingIntent1 = PendingIntent.getActivity(this, 0,intent1,0);
 
 
-        // Intent notificationIntent = new Intent(this, MainActivity.class);
-        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        Intent intent1 = new Intent(this, ScreenSaverActivity.class);
-        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent1 = PendingIntent.getActivity(this, 0,intent1,0);
-
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-        builder.setContentTitle("Foreground Service")
-                .setContentText("GO")
-                .setSmallIcon(R.drawable.cat)
-                .setContentIntent(pendingIntent1);
-        notificationManager.notify(NOTIFY_ID, builder.build());
-        startForeground(NOTIFY_ID, builder.build());
-
-        Log.d("___", "NEW INTENT");
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+            builder.setContentTitle("Foreground Service")
+                    .setContentText("GO")
+                    .setSmallIcon(R.drawable.cat)
+                    .setContentIntent(pendingIntent1);
+            notificationManager.notify(NOTIFY_ID, builder.build());
+            startForeground(NOTIFY_ID, builder.build());
 
 
+            Log.d("___", "NEW INTENT");
 
-
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(5*1000);
-//                    Log.d("___","im in thread");
-//                    startActivity(intent1);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        thread.run();
-        Log.d("___", "GO VIDEO");
-
-
-        return super.onStartCommand(intent, flags, startId);
+            return START_NOT_STICKY;
+        }
+        return START_NOT_STICKY;
     }
 }

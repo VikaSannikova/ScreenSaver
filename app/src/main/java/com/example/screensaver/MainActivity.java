@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 serviceIntent.putExtra("inputExtra", "Foreground Service started !!!");
                 serviceIntent.putExtra("status", "start");
                 ContextCompat.startForegroundService(MainActivity.this, serviceIntent);
-                //finish();
+                finish();
             }
         });
 
