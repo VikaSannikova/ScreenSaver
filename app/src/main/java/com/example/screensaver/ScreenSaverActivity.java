@@ -30,29 +30,29 @@ public class ScreenSaverActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getWindow().setDecorFitsSystemWindows(false);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_screen_saver);
         getSupportActionBar().hide();
 
 
 
-//        vv = (VideoView) findViewById(R.id.videoView);
-//        String videoPath = "android.resource://" + this.getPackageName() + "/" + R.raw.video;
-//        Uri uri = Uri.parse(videoPath);
-//        vv.setVideoURI(uri);
-//        vv.setMediaController(new MediaController(this));
-//        vv.requestFocus(0);
-//
-//        MediaController ctrl = new MediaController(this);
-//        ctrl.setVisibility(View.GONE);
-//        vv.setMediaController(ctrl);
-//
-//        vv.start(); // начинаем воспроизведение автоматически
-//        vv.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mp) {
-//                vv.start();
-//            }
-//        });
+        vv = (VideoView) findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + this.getPackageName() + "/" + R.raw.video;
+        Uri uri = Uri.parse(videoPath);
+        vv.setVideoURI(uri);
+        vv.setMediaController(new MediaController(this));
+        vv.requestFocus(0);
+
+        MediaController ctrl = new MediaController(this);
+        ctrl.setVisibility(View.GONE);
+        vv.setMediaController(ctrl);
+
+        vv.start(); // начинаем воспроизведение автоматически
+        vv.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                vv.start();
+            }
+        });
     }
 
     @Override
